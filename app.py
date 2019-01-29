@@ -22,7 +22,7 @@ def home():
 	marker = 0
 	score = 0
 	
-	return render_template("home.html", words = source, count = 3000, marker = marker, score = score)
+	return render_template("home.html", words = source, marker = marker, score = score)
 	
 @app.route('/results', methods = ['GET', 'POST'])
 def results():
