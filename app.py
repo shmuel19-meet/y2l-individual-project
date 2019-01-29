@@ -25,7 +25,7 @@ def signup():
 	if get_user(request.form['username']) == None:
 		add_user(username = request.form['username'], password = request.form['password'])
 		connected_user = request.form['username']
-		return redirect('/race')
+		return redirect('/race/'+request.form['username'])
 	
 	return redirect('login')
 
@@ -35,33 +35,32 @@ def login():
 	if request.method == 'GET':
 		return render_template('login.html')
 	
-	if get_user(request.form['username'] != None):
-		connected_user = request.form['username']
-		return redirect('/race')
+	print(type(get_user(request.form['username'])))
+	if get_user(request.form['username']) != None and is_the_user(request.form['username'], password = request.form['password']):
+
+		return redirect('/race/'+request.form['username'])
 	
 	return redirect('/signup')
 	
 	
-@app.route('/race')
-def race():
+@app.route('/race/<string:username>', methods = ['GET', 'POST'])
+def race(username):
 
 	with open("./templates/source.txt") as file:
 		source = file.read()
 		source = source.split('\n')
-		
+			
 	random.shuffle(source)
-	
-	return render_template("race.html", words = source)
-	
-@app.route('/results', methods = ['GET', 'POST'])
-def results():
+	return render_template("race.html", words = source, username = username)
+
+@app.route('/results/<string:username>', methods = ['GET', 'POST'])
+def results(username):
 
 	if request.method == 'POST':
-		set_new_record(connected_user, new_record = request.form['right'])
-		print(connected_user)
-		return render_template('results.html', rightWords = request.form['right'], wrongWords = request.form['wrong'], record = get_user(connected_user).get_record())
+		set_new_record(username, new_record = int(request.form['right']))
+		return render_template('results.html', rightWords = request.form['right'], wrongWords = request.form['wrong'], record = get_user(username).get_record(), username = username)
 	
-	return "oh no"
+	return "What are you trying yo do?"
 	
 if __name__ == '__main__':
     app.run(debug=True)
