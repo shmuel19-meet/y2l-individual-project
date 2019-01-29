@@ -20,7 +20,10 @@ def get_user(name):
 def set_new_record(name, new_record):
 
 	user = get_user(name)
-	print(type(user))
+	print(user)
 	user.set_record(new_record)
 	session.add(user)
 	session.commit()
+
+def is_the_user(name, password):
+	return get_user(name).password == password
